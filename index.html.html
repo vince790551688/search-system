@@ -488,14 +488,14 @@
         cachedData = results.flat();
       }
 
-      // Client-side filtering (OR across fields, OR across comma-separated terms)
+      // Client-side filtering (exact match, OR across fields, OR across comma-separated terms)
       currentParams = params;
       const filtered = cachedData.filter(row => {
         return Object.entries(params).some(([key, val]) => {
           if (!val) return false;
           const cellVal = String(row[key] ?? '').toLowerCase();
           const terms = val.split(',').map(t => t.trim().toLowerCase()).filter(t => t);
-          return terms.some(t => cellVal.includes(t));
+          return terms.some(t => cellVal === t);
         });
       });
 
@@ -515,7 +515,7 @@
         if (!v) return false;
         const cellVal = String(row[key] ?? '').toLowerCase();
         const terms = v.split(',').map(t => t.trim().toLowerCase()).filter(t => t);
-        return terms.some(t => cellVal.includes(t));
+        return terms.some(t => cellVal === t);
       })
       .map(([key]) => key);
     if (matchedFields.length === 0) return '';
