@@ -346,6 +346,7 @@
       <button class="btn btn-primary" onclick="search()">SEARCH</button>
       <button class="btn btn-secondary" onclick="clearAll()">CLEAR</button>
       <button class="btn btn-secondary" onclick="refresh()">REFRESH</button>
+      <button class="btn btn-secondary" onclick="reloadData()" id="reloadBtn">重新抓取資料</button>
       <div id="errorMsg"></div>
     </div>
   </div>
@@ -440,6 +441,27 @@
   function refresh() {
     cachedData = null;
     search();
+  }
+
+  async function reloadData() {
+    const btn = document.getElementById('reloadBtn');
+    btn.textContent = '抓取中...';
+    btn.disabled = true;
+    try {
+      const results = await Promise.all(API_URLS.map(async url => {
+        const res = await fetch(url);
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const json = await res.json();
+        return Array.isArray(json) ? json : (json.data || []);
+      }));
+      cachedData = results.flat();
+      btn.textContent = '✓ 抓取完成';
+      setTimeout(() => { btn.textContent = '重新抓取資料'; btn.disabled = false; }, 1500);
+    } catch (err) {
+      cachedData = null;
+      btn.textContent = '抓取失敗';
+      setTimeout(() => { btn.textContent = '重新抓取資料'; btn.disabled = false; }, 2000);
+    }
   }
 
   async function search() {
