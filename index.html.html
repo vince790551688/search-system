@@ -503,7 +503,7 @@
         return Object.values(params).some(({ val, keys }) => {
           const terms = val.split(',').map(t => t.trim().toLowerCase()).filter(t => t);
           return keys.some(key => {
-            const cellVal = String(row[key] ?? '').toLowerCase();
+            const cellVal = String(row[key] ?? '').trim().toLowerCase();
             return terms.some(t => cellVal === t);
           });
         });
@@ -524,7 +524,7 @@
       .filter(([label, { val, keys }]) => {
         const terms = val.split(',').map(t => t.trim().toLowerCase()).filter(t => t);
         return keys.some(key => {
-          const cellVal = String(row[key] ?? '').toLowerCase();
+          const cellVal = String(row[key] ?? '').trim().toLowerCase();
           return terms.some(t => cellVal === t);
         });
       })
