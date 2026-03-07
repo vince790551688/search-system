@@ -358,8 +358,8 @@
         for (const key in params) {
           if (!params[key]) continue;
           const cellVal = String(row[key] ?? '').toLowerCase();
-          const searchVal = params[key].toLowerCase();
-          if (!cellVal.includes(searchVal)) return false;
+          const terms = params[key].split(',').map(t => t.trim().toLowerCase()).filter(t => t);
+          if (!terms.some(t => cellVal.includes(t))) return false;
         }
         return true;
       });
