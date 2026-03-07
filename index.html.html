@@ -313,6 +313,14 @@
 </head>
 <body>
 
+<!-- Access Denied Screen -->
+<div id="accessDenied" style="display:none;align-items:center;justify-content:center;min-height:100vh;">
+  <div style="background:rgba(255,255,255,0.88);border:1px solid #c94444;padding:40px 50px;min-width:320px;text-align:center;">
+    <div style="font-size:15px;letter-spacing:5px;color:#c94444;text-transform:uppercase;margin-bottom:16px;">ACCESS DENIED</div>
+    <div style="font-size:11px;letter-spacing:2px;color:#6a90b0;">您的 IP 無訪問權限</div>
+  </div>
+</div>
+
 <!-- Login Screen -->
 <div id="loginScreen" style="display:flex;align-items:center;justify-content:center;min-height:100vh;">
   <div style="background:rgba(255,255,255,0.88);border:1px solid #a8cce8;padding:40px 50px;min-width:320px;text-align:center;">
@@ -373,6 +381,22 @@
 </div><!-- end mainApp -->
 
 <script>
+  const ALLOWED_IPS = ['220.143.14.119', '82.26.153.21', '52.192.113.75'];
+
+  (async function checkIP() {
+    try {
+      const res = await fetch('https://api.ipify.org?format=json');
+      const { ip } = await res.json();
+      if (!ALLOWED_IPS.includes(ip)) {
+        document.getElementById('loginScreen').style.display = 'none';
+        const denied = document.getElementById('accessDenied');
+        denied.style.display = 'flex';
+      }
+    } catch (e) {
+      // If IP check fails, allow access
+    }
+  })();
+
   const VALID_USER = 'vince1688';
 
   function doLogin() {
