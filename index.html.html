@@ -574,7 +574,7 @@
         const val = col === '備註' ? row['__remark__'] || '' : (row[col] !== undefined && row[col] !== null ? String(row[col]) : '');
         const safe = val.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/"/g, '&quot;');
         if (col === '備註') {
-          return `<td><div class="remark-cell"><span class="remark-text" title="${safe}">${safe || '—'}</span>${safe ? `<button class="copy-btn" onclick="copySingle(this,'${safe.replace(/'/g,"\\'")}')">複製</button>` : ''}</div></td>`;
+          return `<td><div class="remark-cell">${safe ? `<button class="copy-btn" onclick="copySingle(this,'${safe.replace(/'/g,"\\'")}')">複製</button>` : ''}<span class="remark-text" title="${safe}">${safe || '—'}</span></div></td>`;
         }
         return `<td title="${safe}">${safe || '—'}</td>`;
       }).join('');
