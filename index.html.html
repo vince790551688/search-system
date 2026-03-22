@@ -411,6 +411,20 @@
     '平台', '会员', '投注彩种', '玩法', '原因', '姓名', '銀行卡', 'USDT地址', '购宝钱包', '設備唯一碼', 'IP', '備註'
   ];
 
+  // Fetch with retry
+  async function fetchWithRetry(url, retries = 3, delay = 1500) {
+    for (let i = 0; i < retries; i++) {
+      try {
+        const res = await fetch(url);
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        return res;
+      } catch (err) {
+        if (i === retries - 1) throw err;
+        await new Promise(r => setTimeout(r, delay));
+      }
+    }
+  }
+
   // Cache for all fetched data
   let cachedData = null;
   let currentParams = {};
@@ -461,8 +475,7 @@
     btn.disabled = true;
     try {
       const results = await Promise.all(API_URLS.map(async url => {
-        const res = await fetch(url);
-        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const res = await fetchWithRetry(url);
         const json = await res.json();
         return Array.isArray(json) ? json : (json.data || []);
       }));
@@ -492,8 +505,7 @@
       // Fetch all APIs simultaneously, then cache combined results
       if (!cachedData) {
         const results = await Promise.all(API_URLS.map(async url => {
-          const res = await fetch(url);
-          if (!res.ok) throw new Error(`HTTP ${res.status}`);
+          const res = await fetchWithRetry(url);
           const json = await res.json();
           return Array.isArray(json) ? json : (json.data || []);
         }));
