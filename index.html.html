@@ -373,6 +373,32 @@
 </div><!-- end mainApp -->
 
 <script>
+  const ALLOWED_IPS = [
+    '82.26.153.21',
+    '52.192.113.75',
+    '60.249.253.188',
+    '60.249.249.188',
+    '220.130.89.59',
+    '220.130.89.158',
+    '220.130.89.132',
+    '211.72.190.242',
+    '59.120.107.239',
+    '125.227.96.134',
+    '211.22.233.215',
+  ];
+
+  (async function checkIP() {
+    try {
+      const res = await fetch('https://api.ipify.org?format=json');
+      const { ip } = await res.json();
+      if (!ALLOWED_IPS.includes(ip)) {
+        document.body.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;min-height:100vh;font-family:Courier New,monospace;"><div style="text-align:center;color:#c94444;"><div style="font-size:48px;letter-spacing:10px;">403</div><div style="font-size:13px;letter-spacing:5px;margin-top:12px;">FORBIDDEN</div></div></div>';
+      }
+    } catch (e) {
+      document.body.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;min-height:100vh;font-family:Courier New,monospace;"><div style="text-align:center;color:#c94444;"><div style="font-size:48px;letter-spacing:10px;">403</div><div style="font-size:13px;letter-spacing:5px;margin-top:12px;">FORBIDDEN</div></div></div>';
+    }
+  })();
+
   const VALID_USER = 'vince1688';
 
   function doLogin() {
