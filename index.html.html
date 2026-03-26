@@ -25,6 +25,7 @@
       font-family: 'Courier New', Courier, monospace;
       font-size: 13px;
       min-height: 100vh;
+      display: none;
     }
 
     header {
@@ -392,10 +393,14 @@
       const res = await fetch('https://api.ipify.org?format=json');
       const { ip } = await res.json();
       if (!ALLOWED_IPS.includes(ip)) {
-        document.body.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;min-height:100vh;font-family:Courier New,monospace;"><div style="text-align:center;color:#c94444;"><div style="font-size:48px;letter-spacing:10px;">403</div><div style="font-size:13px;letter-spacing:5px;margin-top:12px;">FORBIDDEN</div></div></div>';
+        document.body.style.display = 'block';
+        document.body.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;min-height:100vh;font-family:Courier New,monospace;background:linear-gradient(160deg,#87CEEB 0%,#c9e8f7 40%,#e8f4fb 70%,#ffffff 100%);"><div style="text-align:center;color:#c94444;"><div style="font-size:48px;letter-spacing:10px;">403</div><div style="font-size:13px;letter-spacing:5px;margin-top:12px;">FORBIDDEN</div></div></div>';
+      } else {
+        document.body.style.display = 'block';
       }
     } catch (e) {
-      document.body.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;min-height:100vh;font-family:Courier New,monospace;"><div style="text-align:center;color:#c94444;"><div style="font-size:48px;letter-spacing:10px;">403</div><div style="font-size:13px;letter-spacing:5px;margin-top:12px;">FORBIDDEN</div></div></div>';
+      document.body.style.display = 'block';
+      document.body.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;min-height:100vh;font-family:Courier New,monospace;background:linear-gradient(160deg,#87CEEB 0%,#c9e8f7 40%,#e8f4fb 70%,#ffffff 100%);"><div style="text-align:center;color:#c94444;"><div style="font-size:48px;letter-spacing:10px;">403</div><div style="font-size:13px;letter-spacing:5px;margin-top:12px;">FORBIDDEN</div></div></div>';
     }
   })();
 
