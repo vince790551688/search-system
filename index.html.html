@@ -456,6 +456,16 @@
     }
   }
 
+  // Normalize cell value: unify dash variants and line break variants
+  function normalizeVal(str) {
+    return str
+      .replace(/\r\n/g, '\n')
+      .replace(/[\r\u0085\u2028\u2029]/g, '\n')
+      .replace(/[\u2010\u2011\u2012\u2013\u2014\u2015\u2212\uFE58\uFE63\uFF0D]/g, '-')
+      .replace(/[^\S\n]+/g, ' ')
+      .trim();
+  }
+
   // Cache for all fetched data
   let cachedData = null;
   let currentParams = {};
@@ -543,15 +553,15 @@
         cachedData = results.flat();
       }
 
-      // Client-side filtering (exact match, OR across fields, OR across comma-separated terms)
+      // Client-side filtering (contains match, OR across fields, OR across comma-separated terms)
       currentParams = params;
       const filtered = cachedData.filter(row => {
         return Object.values(params).some(({ val, keys }) => {
-          const terms = val.split(',').map(t => t.trim().toLowerCase()).filter(t => t);
+          const terms = val.split(',').map(t => normalizeVal(t).toLowerCase()).filter(t => t);
           return keys.some(key => {
-            const raw = String(row[key] ?? '').replace(/\r/g, '').replace(/[^\S\n]+/g, ' ');
+            const raw = normalizeVal(String(row[key] ?? ''));
             const tokens = raw.split('\n').map(t => t.trim().toLowerCase()).filter(t => t);
-            return terms.some(t => tokens.some(token => token === t));
+            return terms.some(t => tokens.some(token => token.includes(t)));
           });
         });
       });
@@ -569,11 +579,11 @@
   function generateRemark(row) {
     const matchedFields = Object.entries(currentParams)
       .filter(([label, { val, keys }]) => {
-        const terms = val.split(',').map(t => t.trim().toLowerCase()).filter(t => t);
+        const terms = val.split(',').map(t => normalizeVal(t).toLowerCase()).filter(t => t);
         return keys.some(key => {
-          const raw = String(row[key] ?? '').replace(/\r/g, '').replace(/[^\S\n]+/g, ' ');
+          const raw = normalizeVal(String(row[key] ?? ''));
           const tokens = raw.split('\n').map(t => t.trim().toLowerCase()).filter(t => t);
-          return terms.some(t => tokens.some(token => token === t));
+          return terms.some(t => tokens.some(token => token.includes(t)));
         });
       })
       .map(([label]) => label);
